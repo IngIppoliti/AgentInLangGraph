@@ -1,3 +1,5 @@
+from langgraph.graph import StateGraph, END
+
 class Agent:
 
     def __init__(self, model, tools, system=""):  #a model to use, tools to use and a system message.
