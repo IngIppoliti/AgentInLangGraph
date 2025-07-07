@@ -1,6 +1,6 @@
 
 class Agent:
-    def __init__(self, model, tools, system="", checkpointer=None):
+    def __init__(self, model, tools, system="", checkpointer=None):  #put 'None' means that the parameter is optional
         self.system = system
         graph = StateGraph(AgentState)
         graph.add_node("llm", self.call_openai)
@@ -9,8 +9,8 @@ class Agent:
         graph.add_edge("action", "llm")
         graph.set_entry_point("llm")
         self.graph = graph.compile(
-            checkpointer=checkpointer,
-            interrupt_before=["action"]
+            checkpointer=checkpointer,    #add the checpointer and pass to the compile graph
+            interrupt_before=["action"]   #insert an interruption to put HUMAN IN THE LOOP in order to have approval before every "action" so before every tool you call.
         )
         self.tools = {t.name: t for t in tools}
         self.model = model.bind_tools(tools)
