@@ -1,5 +1,5 @@
 
-class Agent:
+class AgentMemory:
     def __init__(self, model, tools, system="", checkpointer=None):  #put 'None' means that the parameter is optional
         self.system = system
         graph = StateGraph(AgentState)
