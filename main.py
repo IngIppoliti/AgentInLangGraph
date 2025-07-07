@@ -5,18 +5,35 @@ from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.sqlite import SqliteSaver  #for persistency
 
 
+def request_approval(agent,thread):
+        while agent.graph.get_state(thread).next:
+            print("\n", agent.graph.get_state(thread),"\n")
+            _input = input("proceed?")
+            if _input != "y":
+                print("aborting")
+                break
+            for event in agent.graph.stream(None, thread):  #if you invoke again the agent in a stream way it will go to the next state
+                for v in event.values():
+                    print(v)
+
 def call_example_with_human_in_the_loop_and_streaming(agent):
         messages = [HumanMessage(content="Whats the weather in SF?")]
         thread = {"configurable": {"thread_id": "1"}}
-        for event in abot_memory.graph.stream({"messages": messages}, thread):
+        for event in agent.graph.stream({"messages": messages}, thread):
             for v in event.values():
                 print(v)
         
         abot_memory.graph.get_state(thread) #return current thread state (in this case you would see that is blocked just before the call of the action
         abot_memory.graph.get_state(thread).next #return the next status (in this case will return action as next state)
-        for event in abot_memory.graph.stream(None, thread):  #if you invoke again the agent in a stream way
+        request_approval(agent=abot_memory, thread=thread)
+
+def call_axample_modify_state(agent):
+        messages = [HumanMessage("Whats the weather in LA?")]
+        thread = {"configurable": {"thread_id": "3"}}
+        for event in agent.graph.stream({"messages": messages}, thread):
             for v in event.values():
                 print(v)
+        
 
 def main():
     model = ChatOpenAI(model="gpt-4", temperature=0)
