@@ -13,7 +13,7 @@ def call_example_with_human_in_the_loop_and_streaming(agent):
                 print(v)
         
         abot_memory.graph.get_state(thread) #return current thread state (in this case you would see that is blocked just before the call of the action
-        abot_memory.graph.get_state(thread).next #restituisce the next status (in this case will return action as next state)
+        abot_memory.graph.get_state(thread).next #return the next status (in this case will return action as next state)
         for event in abot_memory.graph.stream(None, thread):  #if you invoke again the agent in a stream way
             for v in event.values():
                 print(v)
